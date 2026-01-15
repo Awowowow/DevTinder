@@ -24,7 +24,7 @@ authRouter.post("/signup", async (req, res) => {
       emailId,
       password: passwordHash,
     });
-    
+
     await user.save();
     const token = await user.getJWT();
     res.cookie("token", token);
@@ -48,7 +48,7 @@ authRouter.post("/login", async (req, res) => {
 
     if (!user) {
       throw new Error("Invalid credentials");
-    }
+    } 
 
     const isPasswordValid = await user.validatePassword(password);
     if(isPasswordValid){
