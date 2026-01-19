@@ -1,4 +1,5 @@
 const validator = require("validator");
+const { body, param } = require('express-validator');
 
 const validateSignUpData = (req) => {
   const { firstName, lastName, emailId, password } = req.body;
@@ -106,9 +107,31 @@ const validateEditFieldValue = (req) => {
   return true;
 };
 
+const sendRequestValidation = [
+  param('status')
+    .isIn(['ignored', 'interested'])
+    .withMessage('Status must be either ignored or interested'),
+  param('toUserId')
+    .isMongoId()
+    .withMessage('Invalid user ID format'),
+];
+
+const reviewRequestValidation = [
+  param('status')
+    .isIn(['accepted', 'rejected'])
+    .withMessage('Status must be either accepted or rejected'),
+  param('requestId')
+    .isMongoId()
+    .withMessage('Invalid request ID format'),
+];
+
+
+
+
 module.exports = {
   validateSignUpData,
+  sendRequestValidation,
+  reviewRequestValidation,
   validateProfileEditData,
   validateEditFieldValue
 };
-
