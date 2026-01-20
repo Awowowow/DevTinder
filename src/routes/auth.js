@@ -40,6 +40,7 @@ authRouter.post(
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
+      path: "/",
     });
 
     res.status(201).json({
@@ -79,9 +80,8 @@ authRouter.post(
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
-      path: "/",              
+      path: "/",
     });
-    
 
     res.json({
       success: true,
