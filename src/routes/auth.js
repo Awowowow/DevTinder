@@ -104,11 +104,12 @@ authRouter.post(
       sameSite: "none",
       path: "/",
     });
-    
+
     res.json({
       success: true,
       message: "Logout successful",
     });
-    
+  })
+);
 
 module.exports = authRouter;
