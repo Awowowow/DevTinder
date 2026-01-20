@@ -11,12 +11,17 @@ const {
   UnauthorizedError,
 } = require("../utils/customErrors");
 
+
 authRouter.post(
   "/signup",
   asyncHandler(async (req, res) => {
     validateSignUpData(req);
 
     const { firstName, lastName, emailId, password } = req.body;
+
+    if (!validator.isEmail(emailId)) {
+      throw new BadRequestError("Invalid email format");
+    }
 
     const existingUser = await User.findOne({ emailId });
     if (existingUser) {
@@ -38,8 +43,8 @@ authRouter.post(
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      secure: true,
+      sameSite: "lax",
       path: "/",
     });
 
@@ -78,8 +83,8 @@ authRouter.post(
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      secure: true,
+      sameSite: "lax",
       path: "/",
     });
 
@@ -100,8 +105,8 @@ authRouter.post(
   asyncHandler(async (req, res) => {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      secure: true,
+      sameSite: "lax",
       path: "/",
     });
 
