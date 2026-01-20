@@ -3,13 +3,15 @@ const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const user = require("../models/user");
 const userRouter = express.Router();
+const asyncHandler = require("../utils/asyncHandler");
+const userService = require("../services/user.service");
+
 
 const USER_SAFE_DATA = "firstName lastName photoUrl age gender description skills";
+
 // Get all the pending connection request for the logged in user
-userRouter.get("/user/requests/received", userAuth, async (req, res) => {
-  try {
+userRouter.get("/user/requests/received", userAuth, asyncHandler(async (req, res) => {
     const loggedInUser = req.user;
-    console.log(loggedInUser);
 
     const getConnectionRequest = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
@@ -20,14 +22,11 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
       message: "Data fetched successfully",
       data: getConnectionRequest,
     });
-  } catch (err) {
-    res.statusCode(400).send("ERROR: " + err.message);
-  }
-});
+}));
+
 
 // Get all the connections/matches
-userRouter.get("/user/connections", userAuth, async (req, res) => {
-  try {
+userRouter.get("/user/connections", userAuth, asyncHandler(async (req, res) => {
     const loggedInUser = req.user;
     const connectionsRequest = await ConnectionRequest.find({
       $or: [
@@ -45,53 +44,22 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       return row.fromUserId;
     });
 
-    res.json({ data: data });
-  } catch (err) {
-    res.status(400).send({ message: err.message });
-  }
-});
+    res.json({ data });
+}));
 
-userRouter.get("/feed", userAuth, async (req, res) => {
-  try {
-
+userRouter.get("/feed", userAuth, asyncHandler(async (req, res) => {
+  
     const page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 10;
+    
     limit = limit > 30 ? 30 : limit;
     const skip = (page - 1) * limit;
-    console.log(skip);
 
-    // User should see all the user cards except
-    // 0. his own card
-    // 1  his connections
-    // 2  ignored people
-    // 3 already sent the connection request
-
-    const loggedInUser = req.user;
-
-    // Find all the connection requests (send + recivied)
-    const connectionReqests = await ConnectionRequest.find({
-      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
-    }).select("fromUserId toUserId");
-
-    const hideUsersFromField = new Set();
-
-    connectionReqests.forEach((req) => {
-      hideUsersFromField.add(req.fromUserId.toString());
-      hideUsersFromField.add(req.toUserId.toString());
+    const users = await userService.getFeedUsers(req.user._id,page,limit);
+    res.json({
+      success: true,
+      data: users,
     });
-
-    const users = await user.find({
-      $and: [
-        { _id: { $nin: Array.from(hideUsersFromField) } },
-        { _id: { $ne: loggedInUser._id } },
-      ],
-    }).select(USER_SAFE_DATA).skip(skip).limit(limit);
-    
-    console.log(users);
-    res.send(users);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
+}));
 
 module.exports = userRouter;

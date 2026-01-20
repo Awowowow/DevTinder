@@ -4,18 +4,14 @@ const { userAuth } = require("../middlewares/auth");
 const { validateProfileEditData } = require("../utils/validation");
 const { validateSignUpData } = require("../utils/validation");
 const { validateEditFieldValue } = require("../utils/validation");
+const asyncHandler = require("../utils/asyncHandler");
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
-  try {
     const user = req.user;
     res.send(user);
-  } catch (err) {
-    res.status(400).send("Error: " + err);
-  }
 });
 
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
-  try {
     if (!validateProfileEditData(req)) {
       throw new Error("Invalid Error Request");
     }
@@ -26,12 +22,11 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 
     await loggedInUser.save();
 
-    res.json({ message: loggedInUser.firstName + " Your profile was edited Succesfuully",
-        data: loggedInUser,
+    res.json({
+      success: true,
+      message: `${loggedInUser.firstName}, your profile was updated successfully`,
+      data: loggedInUser,
     });
-  } catch (err) {
-    res.status(400).send("Error: " + err);
-  }
 });
 
 module.exports = profileRouter;

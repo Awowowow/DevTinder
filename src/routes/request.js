@@ -5,13 +5,13 @@ const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 
-
 const asyncHandler = require("../utils/asyncHandler");
 const {
   BadRequestError,
   NotFoundError,
   ConflictError,
 } = require("../utils/customErrors");
+const { run: sendEmail } = require("../utils/sendEmail");
 
 
 requestRouter.post(
@@ -57,7 +57,22 @@ requestRouter.post(
 
     const data = await connectionReqForDb.save();
 
+    try{
+      const emailData = {
+        recipientName: `${toUser.firstName} ${toUser.lastName || ''}`.trim(),
+        status: status,
+        profileUrl: `${process.env.FRONTEND_URL || 'https://devconnect.lol'}/profile/${fromUserId}`,
+        acceptUrl: `${process.env.FRONTEND_URL || 'https://devconnect.lol'}/requests`,
+      };
 
+      await sendEmail(
+        toUser.email,
+        process.env.SES_FROM_EMAIL || "aarav@devconnect.lol",
+        emailData
+      );
+    } catch(emailError){
+      console.error("Failed to send email notification:", emailError);
+    }     
     res.status(201).json({
       success: true,
       message: `${req.user.firstName} sent ${status} request to ${toUser.firstName}`,
