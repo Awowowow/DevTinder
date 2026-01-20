@@ -79,7 +79,9 @@ authRouter.post(
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
+      path: "/",              
     });
+    
 
     res.json({
       success: true,
@@ -96,18 +98,17 @@ authRouter.post(
 authRouter.post(
   "/logout",
   asyncHandler(async (req, res) => {
-    res.cookie("token", null, {
+    res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
-      expires: new Date(0),
+      path: "/",
     });
-
+    
     res.json({
       success: true,
       message: "Logout successful",
     });
-  })
-);
+    
 
 module.exports = authRouter;
