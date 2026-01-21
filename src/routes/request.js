@@ -65,12 +65,11 @@ requestRouter.post(
       };
 
       await sendEmail(
-        toUser.email,
+        toUser.emailId,
         process.env.SES_FROM_EMAIL || "no-reply@devconnect.lol",
         emailData
       );
     } catch (emailError) {
-      // Log error but don't fail the request
       console.error("Email send failed:", emailError.message);
     }
 
