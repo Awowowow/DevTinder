@@ -1,6 +1,10 @@
 const { SendEmailCommand } = require("@aws-sdk/client-ses");
 const { sesClient } = require("./sesClient.js");
 
+const VERIFIED_EMAILS = [
+  "aaravchandel767@gmail.com",
+];
+
 const createSendEmailCommand = (toAddress, fromAddress, emailData) => {
   const { senderName, recipientName, status, profileUrl, acceptUrl } = emailData;
   
@@ -157,18 +161,27 @@ This email was sent to ${toAddress}
 };
 
 const run = async (toAddress, fromAddress, emailData) => {
+
+  if (!VERIFIED_EMAILS.includes(toAddress)) {
+    console.log(`Email skipped - ${toAddress} not verified in SES sandbox`);
+    return { skipped: true, reason: 'Email not verified in sandbox' };
+  }
+
+
   const sendEmailCommand = createSendEmailCommand(
-    "aaravchandel767@gmail.com",
-    "no-reply@devconnect.lol",
+    toAddress,      
+    fromAddress,    
     emailData
   );
 
   try {
-    return await sesClient.send(sendEmailCommand);
+    const result = await sesClient.send(sendEmailCommand);
+    console.log(`Email sent successfully to ${toAddress}`);
+    return result;
   } catch (caught) {
+    console.error(`Failed to send email to ${toAddress}:`, caught.message);
     if (caught instanceof Error && caught.name === "MessageRejected") {
-      const messageRejectedError = caught;
-      return messageRejectedError;
+      return caught;
     }
     throw caught;
   }
