@@ -163,7 +163,6 @@ This email was sent to ${toAddress}
 const run = async (toAddress, fromAddress, emailData) => {
   // Check if recipient email is verified in sandbox
   if (!VERIFIED_EMAILS.includes(toAddress)) {
-    console.log(`Email skipped - ${toAddress} not verified in SES sandbox`);
     return { skipped: true, reason: 'Email not verified in sandbox' };
   }
 
@@ -175,10 +174,8 @@ const run = async (toAddress, fromAddress, emailData) => {
 
   try {
     const result = await sesClient.send(sendEmailCommand);
-    console.log(`✅ Email sent successfully to ${toAddress}`);
     return result;
   } catch (caught) {
-    console.error(`❌ Failed to send email to ${toAddress}:`, caught.message);
     if (caught instanceof Error && caught.name === "MessageRejected") {
       return caught;
     }
