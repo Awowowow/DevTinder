@@ -9,10 +9,4 @@ const sesClient = new SESClient({ region: REGION,
     },
  });
 
- console.log("SES CONFIG:", {
-    accessKey: !!process.env.AWS_ACCESS_KEY,
-    secretKey: !!process.env.AWS_SECRET_KEY,
-    region: REGION,
-    sandbox: process.env.SES_SANDBOX_MODE,
-  });
 module.exports = { sesClient }; 

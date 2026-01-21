@@ -158,8 +158,8 @@ This email was sent to ${toAddress}
 
 const run = async (toAddress, fromAddress, emailData) => {
   const sendEmailCommand = createSendEmailCommand(
-    toAddress,
-    fromAddress,
+    "aaravchandel767@gmail.com",
+    "no-reply@devconnect.lol",
     emailData
   );
 
