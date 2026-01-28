@@ -16,7 +16,8 @@ const getSecretRoomId = ({userId, toUserId}) =>{
 const initializeSocket = (server) => {
   const io = socketIO(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: ["http://localhost:5173",
+      "https://devconnect.lol"],
       credentials: true
     }
   });
