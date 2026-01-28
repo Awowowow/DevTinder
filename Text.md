@@ -28,3 +28,41 @@
 
     /feed?page=2& lmit=10   => 20-30  .skin(20) & .limit(10)
 
+
+
+# Corn jobs: for scheduling tasks in the server
+# crontab guru for practice if confused
+
+# Date-fns library for date managment
+
+
+# Payment GateWay
+    -
+
+
+# Web Socket 
+    -Client Side
+    
+    
+    -Server Side
+        -http from node.js 
+        - create a server using app/ express
+        - get socket 
+        - pass server and cors origin in socket/io
+
+    - Auth Token
+
+
+MUST DO 
+    - AUTH MIDDELE WERE
+
+
+
+
+
+
+    chat.participants.filter(msg =>{
+      if (msg._id === toUserId){
+        return [msg.firstName, msg.lastName, msg.photoUrl]
+      }
+    })

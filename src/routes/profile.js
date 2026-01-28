@@ -5,6 +5,7 @@ const { validateProfileEditData } = require("../utils/validation");
 const { validateSignUpData } = require("../utils/validation");
 const { validateEditFieldValue } = require("../utils/validation");
 const asyncHandler = require("../utils/asyncHandler");
+const User = require("../models/user");
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
     const user = req.user;

@@ -70,6 +70,7 @@ requestRouter.post(
         emailData
       );
     } catch (emailError) {
+
       console.error("Email send failed:", emailError.message);
     }
 
@@ -115,5 +116,4 @@ requestRouter.post(
     });
   })
 );
-
-module.exports = requestRouter;
+module.exports = requestRouter;  

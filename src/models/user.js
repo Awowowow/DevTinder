@@ -14,6 +14,14 @@ const userSchema = new mongoose.Schema(
     lastName: {
       type: String,
     },
+    isOnline: {
+      type: Boolean,
+      default: false
+    },
+    lastSeen: {
+      type: Date,
+      default: Date.now
+    },
     emailId: {
       type: String,
       lowercase: true,
